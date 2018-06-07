@@ -4,7 +4,7 @@ def findNext(text_file,author, parent, left):
     for comment in left:
         if comment["parent_id"][3:] == parent["id"] and comment["author"] == author:
             with open(text_file, "a") as file:
-                file.write(comment["author"] + ": " + str(comment["body"]).replace('\n', '').replace('\r', ' ') + "\n")
+                file.write(comment["author"].encode('utf-8') + ": " + str(comment["body"]).replace('\n', '').replace('\r', ' ').encode('utf-8') + "\n")
             findNext(text_file, parent["author"], comment, left)
             break
 
@@ -48,16 +48,16 @@ def process(list, number):
 
         print "Creating file: " + "reddit" + "{:0>4d}".format(number+count)+".txt"
         with open("reddit" + "{:0>4d}".format(number+count)+".txt", "w") as file:
-            file.write(post["title"].replace('\n', ' ')+"\n")
+            file.write(post["title"].replace('\n', ' ').replace('\r', ' ').encode('utf-8')+"\n")
             file.write(post["url"]+"\n")
-            file.write(parent["author"]+": "+str(parent["body"]).replace('\n', '').replace('\r', ' ')+"\n")
-            file.write(comment["author"]+": "+str(comment["body"]).replace('\n', '').replace('\r', ' ')+"\n")
+            file.write(parent["author"].encode('utf-8')+": "+str(parent["body"]).replace('\n', '').replace('\r', ' ').encode('utf-8')+"\n")
+            file.write(comment["author"].encode('utf-8')+": "+str(comment["body"]).replace('\n', '').replace('\r', ' ').encode('utf-8')+"\n")
         findNext("reddit" + "{:0>4d}".format(number+count)+".txt", parent["author"], comment, notlevel2)
 
         count += 1
 
 
-
+    #issues encoding foreign characters? works for title though?
 
 
 
