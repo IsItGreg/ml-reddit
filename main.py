@@ -1,4 +1,5 @@
 import json
+from process import process
 
 def main():
 
@@ -21,11 +22,14 @@ def main():
         for comment in commFile:
             parsedComm = json.loads(comment)
             for list in postList:
-                if parsedComm["parent_id"] == list[0]["name"]:
+                if parsedComm["link_id"] == list[0]["name"]:
                     list.append(parsedComm)
                     break
 
-
+    count = 0
+    for list in postList:
+        process(list, count)
+        count += 1
 
     return
 
