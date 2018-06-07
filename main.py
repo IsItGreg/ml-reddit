@@ -30,6 +30,7 @@ def main():
     for list in postList:
         process(list, count)
         count += 1
+    #process(postList[0], 0)
 
     return
 
