@@ -1,10 +1,22 @@
 import json
 from process import process
+import os
+import pandas as pd
+
+
+def createDir(dir):
+    try:
+        os.mkdir(dir)
+        return True
+    except:
+        return False
+
 
 def main():
 
-    testComment = '{"created_utc":1138752114,"author_flair_css_class":null,"score":0,"ups":0,"subreddit":"reddit.com","stickied":false,"link_id":"t3_15xh","subreddit_id":"t5_6","body":"THAN the title suggests.  Whoops.","controversiality":1,"retrieved_on":1473820870,"distinguished":null,"gilded":0,"id":"c166b","edited":false,"parent_id":"t3_15xh","author":"gmcg","author_flair_text":null}'
-    testPost = '{"media_embed":{},"selftext":"","stickied":false,"id":"5y9qm","subreddit":"reddit.com","author_flair_text":null,"is_self":false,"author":"moe","from":null,"created":1140998384,"over_18":false,"from_kind":null,"link_flair_text":null,"score":21,"quarantine":false,"media":null,"hide_score":false,"link_flair_css_class":null,"ups":21,"subreddit_id":"t5_6","archived":true,"author_flair_css_class":null,"distinguished":null,"url":"http://www.webdevout.net/firefox_myths.php","gilded":0,"from_id":null,"downs":0,"retrieved_on":1443014580,"title":"Firefox Myths","domain":"webdevout.net","thumbnail":"default","permalink":"/r/reddit.com/comments/5y9qm/firefox_myths/","edited":false,"secure_media_embed":{},"secure_media":null,"num_comments":5,"created_utc":"1140998384","saved":false,"name":"t3_5y9qm"}'
+    dir = "redditFiles"
+    createDir(dir)
+    data = []
 
     POSTS = "RS_2006-02"
     COMMENTS = "RC_2006-02"
@@ -15,7 +27,6 @@ def main():
     with open(POSTS, "r") as postFile:
         for line in postFile:
             parsedPost = json.loads(line)
-            #postName = parsedPost["name"]
             postList.append([parsedPost])
 
     with open(COMMENTS) as commFile:
@@ -28,8 +39,13 @@ def main():
 
     count = 0
     for list in postList:
-        count += process(list, count)
-    #process(postList[0], 0)
+        processed = process(list, count, dir)
+        print type(processed)
+        count += processed[0]
+        data.extend(processed[1])
+
+    df = pd.DataFrame(data, columns=["Post Title", "Post Author", "Time Created", "Post URL", "Number of Comments"])
+    df.to_csv(os.os.path.join(dir, "reddit_metadata.csv"), sep='\t', encoding=('utf-8'))
 
     return
 
