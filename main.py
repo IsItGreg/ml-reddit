@@ -28,8 +28,7 @@ def main():
 
     count = 0
     for list in postList:
-        process(list, count)
-        count += 1
+        count += process(list, count)
     #process(postList[0], 0)
 
     return
