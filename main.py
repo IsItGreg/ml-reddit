@@ -40,12 +40,13 @@ def main():
     count = 0
     for list in postList:
         processed = process(list, count, dir)
-        print type(processed)
-        count += processed[0]
-        data.extend(processed[1])
+        if processed[0] != 0:
+            count += processed[0]
+            data.extend(processed[1])
 
-    df = pd.DataFrame(data, columns=["Post Title", "Post Author", "Time Created", "Post URL", "Number of Comments"])
-    df.to_csv(os.os.path.join(dir, "reddit_metadata.csv"), sep='\t', encoding=('utf-8'))
+
+    df = pd.DataFrame(data, columns=["Post Title", "Username A", "Username B", "Post URL", "Comments in Chain"])
+    df.to_csv(os.path.join(dir, "reddit_metadata.csv"), sep='\t', encoding=('utf-8'))
 
     return
 
