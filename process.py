@@ -18,11 +18,13 @@ def fixLine(str):
     return ' '.join(newstr.split())+"\n"
 
 def findNext(text_file,author, notbody, parent, left):
-    for comment in left:
-        if comment["parent_id"][3:] == parent["id"] and comment["author"] == author and fixLine(comment["body"]) != notbody:
-            with open(text_file, "a") as file:
-                file.write(comment["author"]+ ": " +fixLine(comment["body"]))
-            return  findNext(text_file, parent["author"], fixLine(parent["body"]), comment, left) + 1
+    if left != None and left != []:
+        for comment in left:
+            if comment["parent_id"][3:] == parent["id"] and comment["author"] == author and fixLine(comment["body"]) != notbody:
+                with open(text_file, "a") as file:
+                    file.write(comment["author"]+ ": " +fixLine(comment["body"]))
+                return findNext(text_file, parent["author"], fixLine(parent["body"]), comment, left.remove(comment)) + 1
+
     return 0
 
 def process(list, number, dir):
@@ -33,7 +35,6 @@ def process(list, number, dir):
     count = 0
     data = []
     if not ad.only_alphabet_chars(post["title"], "LATIN"):
-        print(post["title"])
         return nullreturn
 
     if len(comments) < 2:
@@ -44,6 +45,7 @@ def process(list, number, dir):
         commentids.append(comment["id"])
 
     level1 = []
+    level1ids = []
     level2 = []
     notlevel1 = []
     notlevel2 = []
@@ -51,15 +53,12 @@ def process(list, number, dir):
     for comment in comments:
         if comment["parent_id"][3:] not in commentids:
             level1.append(comment)
+            level1ids.append(comment["id"])
         else:
             notlevel1.append(comment)
 
-    commentids = []
-    for comment in level1:
-        commentids.append(comment["id"])
-
     for comment in notlevel1:
-        if comment["parent_id"][3:] not in commentids:
+        if comment["parent_id"][3:] not in level1ids:
             notlevel2.append(comment)
         else:
             level2.append(comment)
